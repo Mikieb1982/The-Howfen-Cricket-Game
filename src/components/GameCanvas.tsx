@@ -4,7 +4,7 @@
 */
 
 import React, { useEffect, useRef, useLayoutEffect } from 'react';
-import { Ball, Batsman, Bat, Stumps, GameState, ShotDirection, AssetsLoaded } from '../types';
+import { Ball, Batsman, Bat, Stumps, GameState, ShotDirection } from '../types';
 import {
     PITCH_COLOR, FIELD_COLOR, STUMPS_COLOR, BALL_FALLBACK_COLOR, BAT_FALLBACK_COLOR, BATSMAN_FALLBACK_COLOR, CREASE_COLOR,
     BALL_RADIUS, BALL_SPRITE_DISPLAY_WIDTH,
@@ -14,6 +14,8 @@ import {
     CANVAS_WIDTH, CANVAS_HEIGHT, BAT_VISUAL_OFFSET_X, TRAIL_LENGTH
 } from '../constants';
 
+type Drawable = HTMLImageElement | HTMLCanvasElement;
+
 interface GameCanvasProps {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     ball: Ball | null;
@@ -22,16 +24,15 @@ interface GameCanvasProps {
     stumps: Stumps | null;
     gameState: GameState;
     shotDirection: ShotDirection;
-    assetsLoaded: AssetsLoaded;
-    batImage: HTMLImageElement;
-    batsmanImage: HTMLImageElement;
-    ballImage: HTMLImageElement;
-    grassImage: HTMLImageElement;
+    batImage: Drawable;
+    batsmanImage: Drawable;
+    ballImage: Drawable;
+    grassImage: Drawable;
 }
 
 const GameCanvas: React.FC<GameCanvasProps> = ({
     canvasRef, ball, batsman, bat, stumps, gameState, shotDirection,
-    assetsLoaded, batImage, batsmanImage, ballImage, grassImage
+    batImage, batsmanImage, ballImage, grassImage
 }) => {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -58,8 +59,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
     }, [canvasRef]);
 
     // Drawing functions, now internal to GameCanvas
-    const drawField = (ctx: CanvasRenderingContext2D, cGrassImage: HTMLImageElement) => {
-        const grassPatternReady = assetsLoaded.grass && cGrassImage.complete && cGrassImage.naturalWidth > 0;
+    const drawField = (ctx: CanvasRenderingContext2D, cGrassImage: Drawable) => {
+        const grassPatternReady = cGrassImage && cGrassImage.width > 0;
         if (grassPatternReady) {
             const pattern = ctx.createPattern(cGrassImage, 'repeat');
             if (pattern) {
@@ -115,8 +116,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
 
     const drawBatsman = (ctx: CanvasRenderingContext2D, cBatsman: Batsman | null, cBat: Bat | null, cShotDir: ShotDirection) => {
         if (!cBatsman || !cBat) return;
-        const batsmanSpriteReady = assetsLoaded.batsman && batsmanImage.complete && batsmanImage.naturalWidth > 0;
-        const batSpriteReady = assetsLoaded.bat && batImage.complete && batImage.naturalWidth > 0;
+        const batsmanSpriteReady = batsmanImage && batsmanImage.width > 0;
+        const batSpriteReady = batImage && batImage.width > 0;
 
         const currentBatsmanWidth = batsmanSpriteReady ? BATSMAN_SPRITE_DISPLAY_WIDTH : FALLBACK_BATSMAN_WIDTH;
         const currentBatsmanHeight = batsmanSpriteReady ? BATSMAN_SPRITE_DISPLAY_HEIGHT : FALLBACK_BATSMAN_HEIGHT;
@@ -154,7 +155,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
 
     const drawBall = (ctx: CanvasRenderingContext2D, cBall: Ball | null) => {
         if (!cBall) return;
-        const ballSpriteReady = assetsLoaded.ball && ballImage.complete && ballImage.naturalWidth > 0;
+        const ballSpriteReady = ballImage && ballImage.width > 0;
         
         // --- Draw Shadow (only when in the air) ---
         if (cBall.z > 0) {
@@ -203,11 +204,16 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
     useEffect(() => {
         const ctx = ctxRef.current;
         const canvas = canvasRef.current;
-        if (!ctx || !canvas || !assetsLoaded.all) {
-             if (ctx) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!ctx || !canvas) {
+            return;
+        }
+
+        const allAssetsReady = ballImage?.width > 0 && batsmanImage?.width > 0 && batImage?.width > 0 && grassImage?.width > 0;
+        if (!allAssetsReady) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (grassImage && grassImage.width > 0) {
                 drawField(ctx, grassImage);
-             }
+            }
             return;
         }
 
@@ -239,7 +245,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
         
         ctx.restore();
 
-    }, [ball, batsman, bat, stumps, gameState, shotDirection, assetsLoaded, batImage, batsmanImage, ballImage, grassImage, canvasRef]);
+    }, [ball, batsman, bat, stumps, gameState, shotDirection, batImage, batsmanImage, ballImage, grassImage, canvasRef]);
 
     return (
         <canvas

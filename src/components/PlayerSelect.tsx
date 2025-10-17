@@ -8,8 +8,8 @@ import { PlayerCharacter } from '../types';
 
 interface PlayerSelectProps {
     onPlayerSelect: (player: PlayerCharacter) => void;
-    spImage: HTMLImageElement;
-    dhImage: HTMLImageElement;
+    spImage?: string;
+    dhImage?: string;
 }
 
 const PlayerSelect: React.FC<PlayerSelectProps> = ({ onPlayerSelect, spImage, dhImage }) => {
@@ -19,11 +19,11 @@ const PlayerSelect: React.FC<PlayerSelectProps> = ({ onPlayerSelect, spImage, dh
                 <h2 className="player-select-title">Choose Your Player</h2>
                 <div className="player-options">
                     <div className="player-card" onClick={() => onPlayerSelect('SP')} role="button" tabIndex={0} aria-label="Select player SP">
-                        <img src={spImage.src} alt="SP Batsman" />
+                        <img src={spImage || ''} alt="SP Batsman" />
                         <div className="player-name">SP</div>
                     </div>
                     <div className="player-card" onClick={() => onPlayerSelect('DH')} role="button" tabIndex={0} aria-label="Select player DH">
-                        <img src={dhImage.src} alt="DH Batsman" />
+                        <img src={dhImage || ''} alt="DH Batsman" />
                         <div className="player-name">DH</div>
                     </div>
                 </div>

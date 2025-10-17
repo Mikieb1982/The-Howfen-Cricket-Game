@@ -96,6 +96,9 @@ function CricketGame() {
     const showControls = game.currentGameState === 'BOWLING' || game.currentGameState === 'READY';
     const showSwingInstruction = game.currentGameState === 'BOWLING';
 
+    // Generate data URLs for PlayerSelect once processed canvases are ready
+    const spImageDataUrl = assets.processed.batsmanCanvas?.toDataURL();
+    const dhImageDataUrl = assets.processed.dhBatsmanCanvas?.toDataURL();
 
     return (
         <div className="immersive-container">
@@ -106,8 +109,8 @@ function CricketGame() {
             {showPlayerSelect && (
                 <PlayerSelect
                     onPlayerSelect={handlePlayerSelect}
-                    spImage={assets.batsmanImageRef.current}
-                    dhImage={assets.dhBatsmanImageRef.current}
+                    spImage={spImageDataUrl}
+                    dhImage={dhImageDataUrl}
                 />
             )}
 
@@ -155,11 +158,13 @@ function CricketGame() {
                 stumps={game.stumps}
                 gameState={game.currentGameState}
                 shotDirection={game.shotDirection}
-                assetsLoaded={assets.assetsLoaded}
-                batImage={assets.batImageRef.current}
-                batsmanImage={playerCharacter === 'SP' ? assets.batsmanImageRef.current : assets.dhBatsmanImageRef.current}
-                ballImage={assets.ballImageRef.current}
-                grassImage={assets.grassImageRef.current}
+                batImage={assets.processed.batCanvas ?? assets.batImageRef.current}
+                batsmanImage={playerCharacter === 'SP' ?
+                    (assets.processed.batsmanCanvas ?? assets.batsmanImageRef.current) :
+                    (assets.processed.dhBatsmanCanvas ?? assets.dhBatsmanImageRef.current)
+                }
+                ballImage={assets.processed.ballCanvas ?? assets.ballImageRef.current}
+                grassImage={assets.processed.grassCanvas ?? assets.grassImageRef.current}
             />
             
             {showControls && (
