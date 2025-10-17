@@ -1,0 +1,454 @@
+/* --- Base Setup & Typography --- */
+body {
+    font-family: 'Gochi Hand', cursive;
+    background-color: #f7f7e8; /* Light parchment/cream */
+    color: #1a1a1a; /* Black for text, like ink */
+    margin: 0;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Main Game Container --- */
+.immersive-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #8bc34a; /* Construction paper green for the pitch area */
+    border: none;
+    box-shadow: none;
+}
+
+/* --- Game Header --- */
+.game-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    z-index: 5;
+    text-align: center;
+}
+
+.game-header h1 {
+    font-size: 3rem;
+    color: #1a1a1a;
+    margin: 0;
+    text-shadow: none;
+}
+
+/* --- Canvas --- */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+
+/* --- Shared Paper Cutout Style for UI elements --- */
+.game-instructions-panel, .player-card, .scoreboard, .message-area, .commentary-status, .api-key-content {
+    border: 3px solid #1a1a1a;
+    box-shadow: 6px 6px 0 0 #1a1a1a;
+    background-color: #f7f7e8; /* Cream background */
+}
+
+/* --- Scoreboard --- */
+.scoreboard {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    padding: 8px 12px;
+    font-size: 1.2rem;
+    color: #1a1a1a;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px 15px;
+    z-index: 5;
+    text-shadow: none;
+}
+
+.scoreboard .score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.scoreboard .score-label {
+    font-size: 1rem;
+    color: #555;
+    margin-right: 10px;
+}
+
+.scoreboard .score-value {
+    font-size: 1.6rem;
+    font-weight: normal;
+}
+
+/* --- Base Button Style (Paper Cutout) --- */
+button {
+    font-family: 'Gochi Hand', cursive;
+    background-color: #f1c40f; /* Yellow/Gold */
+    color: #1a1a1a;
+    padding: 10px 20px;
+    border: 3px solid #1a1a1a;
+    box-shadow: 6px 6px 0 0 #1a1a1a;
+    border-radius: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+    text-shadow: none;
+}
+
+button:hover {
+    background-color: #f3d148; /* Slightly lighter yellow */
+}
+
+button:active {
+    background-color: #e0b40d; /* Slightly darker yellow */
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 0 #1a1a1a; /* Reduced shadow */
+}
+
+button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0px #1a1a1a;
+}
+
+/* --- Central Start/End Button Overlay --- */
+.start-game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.start-game-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 30px;
+}
+
+.start-button-main {
+    padding: 15px 30px;
+    font-size: 2rem;
+}
+
+.game-instructions-panel {
+    padding: 15px 25px;
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.game-instructions-panel h3 {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin: 0 0 15px 0;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.game-instructions-panel p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+.mobile-controls-instructions {
+    display: none;
+}
+
+/* --- Play Again Button --- */
+.btn-retro {
+    padding: 20px 40px;
+    font-size: 2.5rem;
+}
+
+/* --- Mobile Controls --- */
+.mobile-controls-container {
+    position: absolute;
+    bottom: 125px; /* Position above scoreboard, adjust as needed */
+    left: 10px;
+    right: 10px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.mobile-d-pad, .mobile-action-pad {
+    display: flex;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.mobile-btn {
+    background: #f7f7e8; /* Cream */
+    border: 3px solid #1a1a1a;
+    box-shadow: 4px 4px 0 0 #1a1a1a;
+    color: #1a1a1a;
+    font-size: 1.5rem;
+    width: 60px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.mobile-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 #1a1a1a;
+}
+
+.mobile-btn.active {
+    background: #f1c40f; /* Yellow when active */
+}
+
+.mobile-swing-btn {
+    width: 100px;
+    height: 65px;
+    font-size: 1.5rem;
+    background-color: #f1c40f; /* Yellow */
+}
+
+/* --- Game Message Area --- */
+.game-message-container {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    pointer-events: none;
+    width: 90%;
+}
+
+.message-area, .commentary-status {
+    font-size: 1.4rem;
+    color: #1a1a1a;
+    text-shadow: none;
+    padding: 5px 15px;
+}
+
+.commentary-status {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* --- Swing Instruction for Desktop --- */
+.swing-instruction {
+    font-size: 1.3rem;
+    color: #f7f7e8;
+    background-color: rgba(26, 26, 26, 0.8); /* Dark background for contrast on green */
+    padding: 5px 12px;
+}
+
+/* Generic key/button highlight style */
+.key-highlight {
+    background-color: #1a1a1a;
+    color: #f7f7e8;
+    padding: 2px 8px;
+    display: inline-block;
+}
+
+/* --- Media Queries for Mobile/Tablet --- */
+@media (max-width: 768px) {
+    .swing-instruction { display: none; }
+    .mobile-controls-container { display: flex; }
+    .game-message-container { top: 70px; }
+    .game-header h1 { font-size: 2rem; }
+    .scoreboard { font-size: 1rem; }
+    .scoreboard .score-value { font-size: 1.3rem; }
+    .message-area { font-size: 1.2rem; }
+    .desktop-controls-instructions { display: none; }
+    .mobile-controls-instructions { display: block; }
+}
+
+/* --- Impact Message Effect (Paper Cutout Style) --- */
+.impact-message-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.impact-message-text {
+  font-family: 'Gochi Hand', cursive;
+  font-size: 4rem;
+  color: #1a1a1a;
+  text-shadow: 4px 4px 0px rgba(255, 255, 255, 0.7);
+  padding: 20px 30px;
+  background-color: #f1c40f; /* Yellow */
+  border: 3px solid #1a1a1a;
+  box-shadow: 6px 6px 0 0 #1a1a1a;
+  animation: impactKeyframes 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  transform-origin: center center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+@keyframes impactKeyframes {
+  0% { transform: scale(0.2) rotate(-20deg); opacity: 0; }
+  30% { transform: scale(1.25) rotate(7deg); opacity: 1; }
+  50% { transform: scale(1.0) rotate(-3deg); opacity: 1; }
+  80% { transform: scale(1.05) rotate(0deg); opacity: 1; }
+  100% { transform: scale(2.5) rotate(15deg); opacity: 0; }
+}
+
+/* --- Player Select Screen (Paper Cutout Style) --- */
+.player-select-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.65);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.player-select-title {
+    font-size: 2.5rem;
+    color: #f7f7e8; /* Cream text on dark overlay */
+    margin: 0 0 30px 0;
+    text-align: center;
+}
+
+.player-options {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.player-card {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease-out, border-color 0.2s;
+    width: 150px;
+}
+
+.player-card:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: #f1c40f; /* Yellow border on hover */
+}
+
+.player-card img {
+    width: 80px;
+    height: 100px;
+    object-fit: contain;
+    /* image-rendering: pixelated; This was removed for paper cutout style */
+}
+
+.player-card .player-name {
+    font-size: 2rem;
+    color: #1a1a1a;
+}
+
+/* --- API Key Selection Overlay --- */
+.api-key-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20; /* Highest priority */
+    background-color: rgba(0,0,0,0.75);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.api-key-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    padding: 30px;
+    max-width: 500px;
+}
+
+.api-key-content h2 {
+    font-size: 2rem;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.api-key-content p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.api-key-error {
+    color: #c0392b; /* Dark red */
+    font-size: 1.1rem;
+    background-color: #f7f7e8;
+    border: 2px dashed #c0392b;
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .player-select-title { font-size: 2rem; }
+    .player-card { width: 120px; padding: 15px; }
+}
